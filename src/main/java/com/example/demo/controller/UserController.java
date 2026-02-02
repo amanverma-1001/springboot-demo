@@ -59,8 +59,17 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> LoginByUser(@RequestBody LoginRequest userLogin, HttpSession session){
        UserModel user = userService.Login(userLogin);
-       session.setAttribute("user ID", user.getId());
+       session.setAttribute("USER_ID", user.getId());
        return ResponseEntity.status(HttpStatus.valueOf(200)).body("Login successful");
+    }
+
+    @GetMapping("/me")
+    public Optional<UserModel> me(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("USER_ID");
+        if (userId == null) {
+            throw new RuntimeException("Not logged in");
+        }
+        return userService.getByID(userId);
     }
 
 
