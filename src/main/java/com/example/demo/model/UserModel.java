@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name= "users")
-public class HelloModel {
+public class UserModel {
     @Id
     private Integer id;
 
@@ -16,14 +16,19 @@ public class HelloModel {
     @Email(message = "Invalid Email")
     private String email;
 
-    public HelloModel(){
+    private String password;
+
+    public UserModel(){
 
     }
 
-    public HelloModel(Integer id, String name, String email) {
+
+
+    public UserModel(Integer id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     public void setId(Integer id){
@@ -48,5 +53,13 @@ public class HelloModel {
 
     public String getName() {
         return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
