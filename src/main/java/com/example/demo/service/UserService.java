@@ -21,18 +21,18 @@ public class UserService {
 
     private final UserRepository repo;
 
-    private final PasswordEncoder encoder;
+    //private final PasswordEncoder encoder;
 
     @Autowired
-    public UserService(UserRepository repo, PasswordEncoder encoder){
+    public UserService(UserRepository repo){
         this.repo = repo;
-        this.encoder = encoder;
+      //  this.encoder = encoder;
     }
 
     public UserModel createUser(UserModel user){
         Optional<UserModel> u = repo.findById(user.getId());
         if(!u.isPresent()) {
-            user.setPassword(encoder.encode(user.getPassword()));
+           // user.setPassword(encoder.encode(user.getPassword()));
             repo.save(user);
             log.debug("User creation in service");
             return user;
@@ -74,10 +74,10 @@ public class UserService {
 
     public UserModel Login(LoginRequest userLogin){
       UserModel user = repo.findUserModelByEmail(userLogin.getEmail()).orElseThrow(() -> new UserNotFoundException("No user found"));
-      if(!encoder.matches(userLogin.getPassword(), user.getPassword()))
+      /*if(!encoder.matches(userLogin.getPassword(), user.getPassword()))
         {
             throw new UserNotFoundException("Invalid credentials");
-        }
+        }*/
      return user;
     }
 }
