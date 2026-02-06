@@ -1,12 +1,20 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.management.relation.Role;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name= "users")
-public class UserModel {
+public class UserModel implements UserDetails {
     @Id
     private Integer id;
 
@@ -15,6 +23,8 @@ public class UserModel {
 
     @Email(message = "Invalid Email")
     private String email;
+
+    private String role;
 
     private String password;
 
@@ -55,8 +65,21 @@ public class UserModel {
         return name;
     }
 
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return List.of(new SimpleGrantedAuthority(role));
+    }
+
+    @JsonIgnore
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
     }
 
     public void setPassword(String password) {

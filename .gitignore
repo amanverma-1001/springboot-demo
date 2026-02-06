@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#Log
+dev.log.2026-01-31.0.gz
+dev.log
