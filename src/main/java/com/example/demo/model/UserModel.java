@@ -34,11 +34,12 @@ public class UserModel implements UserDetails {
 
 
 
-    public UserModel(Integer id, String name, String email, String password) {
+    public UserModel(Integer id, String name, String email, String password,String role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role=role;
     }
 
     public void setId(Integer id){
@@ -72,7 +73,6 @@ public class UserModel implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role));
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -85,4 +85,9 @@ public class UserModel implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }
