@@ -2,14 +2,18 @@ package com.example.demo.security;
 
 import com.example.demo.filter.JWTfilter;
 import com.example.demo.model.CustomUserModel;
+import com.example.demo.model.Permissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     @Autowired
     JWTfilter jwtfilter;
@@ -32,7 +37,9 @@ public class SecurityConfig {
            http.csrf(csrf -> csrf.disable())
                    .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/authenticate").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/authenticate").permitAll()
+                                //.requestMatchers(HttpMethod.GET,"/api/user").hasAuthority(Permissions.USER_DELETE.name())
+                                //.requestMatchers(HttpMethod.POST,"/api/user").hasAuthority(Permissions.USER_READ.name())
                                 .anyRequest().authenticated())
                 .httpBasic(withDefaults());
            http.addFilterBefore(jwtfilter, UsernamePasswordAuthenticationFilter.class);

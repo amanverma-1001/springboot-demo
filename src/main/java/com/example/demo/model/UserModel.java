@@ -8,9 +8,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name= "users")
@@ -24,7 +26,8 @@ public class UserModel implements UserDetails {
     @Email(message = "Invalid Email")
     private String email;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     private String password;
 
@@ -34,7 +37,7 @@ public class UserModel implements UserDetails {
 
 
 
-    public UserModel(Integer id, String name, String email, String password,String role) {
+    public UserModel(Integer id, String name, String email, String password,Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -69,8 +72,14 @@ public class UserModel implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<SimpleGrantedAuthority> authoritySet = new HashSet<>();
+        authoritySet.add(new SimpleGrantedAuthority("ROLE_"+role.name()));
 
-        return List.of(new SimpleGrantedAuthority(role));
+        Set<SimpleGrantedAuthority> permissonauthorities = role.getPermissions().stream().
+                                                           map(permissions -> new SimpleGrantedAuthority(permissions.name()))
+                                                                   .collect(Collectors.toSet());
+        authoritySet.addAll(permissonauthorities);
+        return authoritySet;
     }
 
     public String getPassword() {
@@ -86,7 +95,7 @@ public class UserModel implements UserDetails {
         this.password = password;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
